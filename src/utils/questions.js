@@ -3,18 +3,25 @@ import questionsBool from '../../questions/questions_bool.json'
 import questionsChoose from '../../questions/questions_choose.json'
 import questionsMulti from '../../questions/questions_multi.json'
 
+// 题库数据缓存
+const questionCache = {
+  bool: questionsBool,
+  choose: questionsChoose,
+  multi: questionsMulti
+}
+
 // 随机抽取题目
 export function getRandomQuestions(type, count) {
   let questions = []
   switch (type) {
     case 'bool':
-      questions = [...questionsBool]
+      questions = [...questionCache.bool]
       break
     case 'choose':
-      questions = [...questionsChoose]
+      questions = [...questionCache.choose]
       break
     case 'multi':
-      questions = [...questionsMulti]
+      questions = [...questionCache.multi]
       break
   }
   
