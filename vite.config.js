@@ -5,6 +5,7 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: '/exam-simulator/', // GitHub Pages 部署需要设置仓库名
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
