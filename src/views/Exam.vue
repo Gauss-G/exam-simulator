@@ -556,4 +556,71 @@ onUnmounted(() => {
   color: #f56c6c;
   font-weight: bold;
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .exam-page {
+    max-width: 100%;
+  }
+  
+  .timer {
+    font-size: 16px;
+  }
+  
+  .question-content {
+    font-size: 16px;
+  }
+  
+  .answer-grid {
+    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 8px;
+  }
+  
+  .answer-item {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .answer-options :deep(.el-radio),
+  .answer-options :deep(.el-checkbox) {
+    padding: 12px;
+  }
+  
+  .answer-options :deep(.el-radio__label),
+  .answer-options :deep(.el-checkbox__label) {
+    font-size: 14px;
+  }
+  
+  .answer-detail-item {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-content {
+    font-size: 15px;
+  }
+  
+  .answer-grid {
+    grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+    gap: 6px;
+  }
+  
+  .answer-item {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+  
+  .answer-options :deep(.el-radio),
+  .answer-options :deep(.el-checkbox) {
+    padding: 10px;
+  }
+  
+  .answer-options :deep(.el-radio__label),
+  .answer-options :deep(.el-checkbox__label) {
+    font-size: 13px;
+  }
+}
 </style>

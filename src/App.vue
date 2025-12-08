@@ -49,18 +49,63 @@ const activeMenu = computed(() => route.path)
   display: flex;
   align-items: center;
   height: 100%;
+  padding: 0 15px;
 }
 
 .header-content h1 {
-  margin: 0 40px 0 0;
-  font-size: 24px;
+  margin: 0 20px 0 0;
+  font-size: 20px;
   color: #409eff;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   width: 100%;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .header {
+    height: auto !important;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    padding: 10px;
+    align-items: flex-start;
+  }
+  
+  .header-content h1 {
+    margin: 5px 0;
+    font-size: 18px;
+  }
+  
+  .header-content :deep(.el-menu) {
+    width: 100%;
+  }
+  
+  .header-content :deep(.el-menu-item) {
+    padding: 0 10px;
+    font-size: 14px;
+  }
+  
+  .main-content {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content h1 {
+    font-size: 16px;
+  }
+  
+  .header-content :deep(.el-menu-item) {
+    padding: 0 8px;
+    font-size: 12px;
+  }
 }
 </style>

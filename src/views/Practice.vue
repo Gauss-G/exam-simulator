@@ -495,4 +495,40 @@ const getQuestionTypeName = (type) => {
   font-weight: bold;
   color: #409eff;
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .practice-page {
+    max-width: 100%;
+  }
+  
+  .question-content {
+    font-size: 16px;
+  }
+  
+  .answer-options :deep(.el-radio),
+  .answer-options :deep(.el-checkbox) {
+    padding: 12px;
+  }
+  
+  .answer-detail-item {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-content {
+    font-size: 15px;
+  }
+  
+  .answer-options :deep(.el-radio),
+  .answer-options :deep(.el-checkbox) {
+    padding: 10px;
+  }
+  
+  .answer-options :deep(.el-radio__label),
+  .answer-options :deep(.el-checkbox__label) {
+    font-size: 13px;
+  }
+}
 </style>

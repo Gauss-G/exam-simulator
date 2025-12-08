@@ -206,4 +206,45 @@ const goTo = (path) => {
   color: #909399;
   font-size: 14px;
 }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .home-page {
+    padding: 10px 0;
+  }
+  
+  .welcome-card h2 {
+    font-size: 20px;
+  }
+  
+  .welcome-card p {
+    font-size: 14px;
+  }
+  
+  .feature-card h3 {
+    font-size: 18px;
+  }
+  
+  .feature-list {
+    font-size: 14px;
+  }
+  
+  .stat-item {
+    padding: 15px 10px;
+  }
+  
+  .stat-number {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feature-icon :deep(.el-icon) {
+    font-size: 36px !important;
+  }
+  
+  .stat-number {
+    font-size: 24px;
+  }
+}
 </style>
