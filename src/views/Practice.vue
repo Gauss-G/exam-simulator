@@ -258,9 +258,9 @@ const practiceForm = ref({
   mode: 'single',
   type: 'bool',
   count: 10,
-  boolCount: 5,
-  chooseCount: 10,
-  multiCount: 5,
+  boolCount: 16,
+  chooseCount: 56,
+  multiCount: 4,
   excludeMastered: false
 })
 

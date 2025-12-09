@@ -21,12 +21,16 @@
         <router-view />
       </el-main>
     </el-container>
+    
+    <!-- 打赏组件 -->
+    <DonationModal />
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import DonationModal from './components/DonationModal.vue'
 
 const route = useRoute()
 const activeMenu = computed(() => route.path)
