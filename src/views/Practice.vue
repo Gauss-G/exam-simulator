@@ -4,22 +4,67 @@
     <el-card v-if="!practiceStarted">
       <h2>练习模式设置</h2>
       
-      <el-form :model="practiceForm" label-width="100px" style="margin-top: 30px;">
-        <el-form-item label="题型选择">
-          <el-radio-group v-model="practiceForm.type">
-            <el-radio label="bool">判断题</el-radio>
-            <el-radio label="choose">单选题</el-radio>
-            <el-radio label="multi">多选题</el-radio>
+      <el-form :model="practiceForm" label-width="120px" style="margin-top: 30px;">
+        <el-form-item label="练习模式">
+          <el-radio-group v-model="practiceForm.mode">
+            <el-radio label="single">单一题型</el-radio>
+            <el-radio label="mixed">混合题型</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="题目数量">
-          <el-input-number 
-            v-model="practiceForm.count" 
-            :min="1" 
-            :max="getMaxCount()"
-          />
-          <span class="tip">（最多 {{ getMaxCount() }} 道）</span>
+        <!-- 单一题型模式 -->
+        <template v-if="practiceForm.mode === 'single'">
+          <el-form-item label="题型选择">
+            <el-radio-group v-model="practiceForm.type">
+              <el-radio label="bool">判断题</el-radio>
+              <el-radio label="choose">单选题</el-radio>
+              <el-radio label="multi">多选题</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item label="题目数量">
+            <el-input-number 
+              v-model="practiceForm.count" 
+              :min="1" 
+              :max="getMaxCount()"
+            />
+            <span class="tip">（最多 {{ getMaxCount() }} 道）</span>
+          </el-form-item>
+        </template>
+
+        <!-- 混合题型模式 -->
+        <template v-else>
+          <el-form-item label="判断题数量">
+            <el-input-number 
+              v-model="practiceForm.boolCount" 
+              :min="0" 
+              :max="questionsBool.length"
+            />
+            <span class="tip">（最多 {{ questionsBool.length }} 道）</span>
+          </el-form-item>
+
+          <el-form-item label="单选题数量">
+            <el-input-number 
+              v-model="practiceForm.chooseCount" 
+              :min="0" 
+              :max="questionsChoose.length"
+            />
+            <span class="tip">（最多 {{ questionsChoose.length }} 道）</span>
+          </el-form-item>
+
+          <el-form-item label="多选题数量">
+            <el-input-number 
+              v-model="practiceForm.multiCount" 
+              :min="0" 
+              :max="questionsMulti.length"
+            />
+            <span class="tip">（最多 {{ questionsMulti.length }} 道）</span>
+          </el-form-item>
+        </template>
+
+        <el-form-item label="排除已掌握">
+          <el-switch v-model="practiceForm.excludeMastered" />
+          <span class="tip">（排除已连续答对3次的题目）</span>
         </el-form-item>
 
         <el-form-item>
@@ -36,7 +81,7 @@
           :closable="false"
           style="margin: 15px 0;"
         >
-          已掌握 {{ masteredQuestions.length }} 道题目（连续答对5次以上）
+          已掌握 {{ masteredQuestions.length }} 道题目（连续答对3次以上）
         </el-alert>
         <el-button @click="viewMasteredQuestions" v-if="masteredQuestions.length > 0">
           查看已掌握题目
@@ -142,7 +187,9 @@
       <el-result
         icon="success"
         title="练习完成！"
-        :sub-title="`正确率：${Math.round((correctCount / questions.length) * 100)}% (${correctCount}/${questions.length})`"
+        :sub-title="practiceForm.mode === 'mixed' 
+          ? `得分：${practiceScore.toFixed(1)} 分 (正确率：${Math.round((correctCount / questions.length) * 100)}%)`
+          : `正确率：${Math.round((correctCount / questions.length) * 100)}% (${correctCount}/${questions.length})`"
       >
         <template #extra>
           <el-button type="primary" @click="viewAnswers">查看答案</el-button>
@@ -205,10 +252,16 @@ const showMasteredDialog = ref(false)
 const questions = ref([])
 const currentIndex = ref(0)
 const masteredQuestions = ref([])
+const practiceScore = ref(0)
 
 const practiceForm = ref({
+  mode: 'single',
   type: 'bool',
-  count: 10
+  count: 10,
+  boolCount: 5,
+  chooseCount: 10,
+  multiCount: 5,
+  excludeMastered: false
 })
 
 const currentQuestion = computed(() => questions.value[currentIndex.value])
@@ -232,12 +285,36 @@ const getMaxCount = () => {
 
 // 开始练习
 const startPractice = () => {
-  if (practiceForm.value.count < 1) {
-    ElMessage.error('请选择至少1道题目')
+  const excludeMastered = practiceForm.value.excludeMastered
+  
+  if (practiceForm.value.mode === 'single') {
+    if (practiceForm.value.count < 1) {
+      ElMessage.error('请选择至少1道题目')
+      return
+    }
+    questions.value = getRandomQuestions(practiceForm.value.type, practiceForm.value.count, excludeMastered)
+  } else {
+    // 混合模式
+    const { boolCount, chooseCount, multiCount } = practiceForm.value
+    const total = boolCount + chooseCount + multiCount
+    
+    if (total < 1) {
+      ElMessage.error('请至少选择1道题目')
+      return
+    }
+    
+    const boolQuestions = boolCount > 0 ? getRandomQuestions('bool', boolCount, excludeMastered) : []
+    const chooseQuestions = chooseCount > 0 ? getRandomQuestions('choose', chooseCount, excludeMastered) : []
+    const multiQuestions = multiCount > 0 ? getRandomQuestions('multi', multiCount, excludeMastered) : []
+    
+    questions.value = [...boolQuestions, ...chooseQuestions, ...multiQuestions]
+  }
+  
+  if (questions.value.length === 0) {
+    ElMessage.warning('没有符合条件的题目，请调整设置')
     return
   }
   
-  questions.value = getRandomQuestions(practiceForm.value.type, practiceForm.value.count)
   practiceStarted.value = true
   currentIndex.value = 0
 }
@@ -258,6 +335,22 @@ const nextQuestion = () => {
 
 // 完成练习
 const finishPractice = () => {
+  // 计算分数（混合模式）
+  if (practiceForm.value.mode === 'mixed') {
+    let score = 0
+    questions.value.forEach(q => {
+      const isCorrect = checkQuestionAnswer(q)
+      if (isCorrect) {
+        if (q.type === 'bool' || q.type === 'choose') {
+          score += 0.5
+        } else if (q.type === 'multi') {
+          score += 1
+        }
+      }
+    })
+    practiceScore.value = score
+  }
+  
   // 记录统计和错题
   questions.value.forEach(q => {
     const isCorrect = checkQuestionAnswer(q)

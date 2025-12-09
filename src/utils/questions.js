@@ -10,8 +10,8 @@ const questionCache = {
   multi: questionsMulti
 }
 
-// 随机抽取题目
-export function getRandomQuestions(type, count) {
+// 随机抽取题目（支持排除已掌握）
+export function getRandomQuestions(type, count, excludeMastered = false) {
   let questions = []
   switch (type) {
     case 'bool':
@@ -23,6 +23,16 @@ export function getRandomQuestions(type, count) {
     case 'multi':
       questions = [...questionCache.multi]
       break
+  }
+  
+  // 如果需要排除已掌握的题目
+  if (excludeMastered) {
+    const { getMasteredQuestions } = require('./storage')
+    const masteredList = getMasteredQuestions()
+    questions = questions.filter(q => {
+      const key = `${type}_${q.index}`
+      return !masteredList.includes(key)
+    })
   }
   
   // 洗牌算法随机抽取

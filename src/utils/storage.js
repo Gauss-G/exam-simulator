@@ -98,8 +98,8 @@ export function updateQuestionStats(questionId, type, isCorrect) {
   
   setStorageData(STORAGE_KEYS.QUESTION_STATS, stats)
   
-  // 如果连续答对5次，标记为已掌握
-  if (stats[key].correctCount >= 5) {
+  // 如果连续答对3次，标记为已掌握
+  if (stats[key].correctCount >= 3) {
     addMasteredQuestion(key)
   }
   

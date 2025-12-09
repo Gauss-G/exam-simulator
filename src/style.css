@@ -21,6 +21,17 @@ body {
   overflow-x: auto;
 }
 
+/* 全局文字换行设置 */
+.question-content,
+.option-item,
+.detail-content {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+}
+
 /* 移动端优化 */
 @media (max-width: 768px) {
   body {
@@ -33,5 +44,11 @@ body {
   
   h3 {
     font-size: 18px;
+  }
+  
+  /* 确保所有文本内容换行 */
+  * {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 }
