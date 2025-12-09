@@ -496,7 +496,7 @@ const createConfetti = () => {
 @media (max-width: 480px) {
   .qrcode-image {
     width: 160px;
-    height: 160px;
+    height: 210px;
   }
 }
 </style>

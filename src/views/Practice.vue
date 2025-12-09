@@ -185,12 +185,29 @@
     <!-- 练习结果 -->
     <el-card v-if="showResult" class="result-card">
       <el-result
-        icon="success"
+        :icon="practiceForm.mode === 'mixed' && practiceScore >= 60 ? 'success' : 'info'"
         title="练习完成！"
-        :sub-title="practiceForm.mode === 'mixed' 
-          ? `得分：${practiceScore.toFixed(1)} 分 (正确率：${Math.round((correctCount / questions.length) * 100)}%)`
-          : `正确率：${Math.round((correctCount / questions.length) * 100)}% (${correctCount}/${questions.length})`"
       >
+        <template #sub-title>
+          <div v-if="practiceForm.mode === 'mixed'">
+            <div style="font-size: 20px; margin-bottom: 8px;">
+              得分：<strong>{{ practiceScore.toFixed(2) }}</strong> 分
+              <el-tag 
+                :type="practiceScore >= 60 ? 'success' : 'danger'" 
+                size="large" 
+                style="margin-left: 12px;"
+              >
+                {{ practiceScore >= 60 ? '及格' : '不及格' }}
+              </el-tag>
+            </div>
+            <div style="font-size: 14px; color: #909399;">
+              正确率：{{ Math.round((correctCount / questions.length) * 100) }}% ({{ correctCount }}/{{ questions.length }})
+            </div>
+          </div>
+          <div v-else>
+            正确率：{{ Math.round((correctCount / questions.length) * 100) }}% ({{ correctCount }}/{{ questions.length }})
+          </div>
+        </template>
         <template #extra>
           <el-button type="primary" @click="viewAnswers">查看答案</el-button>
           <el-button @click="backToSettings">返回设置</el-button>
@@ -335,19 +352,43 @@ const nextQuestion = () => {
 
 // 完成练习
 const finishPractice = () => {
-  // 计算分数（混合模式）
+  // 计算分数（混合模式）- 100分制，1:1:2比例
   if (practiceForm.value.mode === 'mixed') {
-    let score = 0
+    // 统计各题型数量和正确数量
+    const stats = {
+      bool: { total: 0, correct: 0 },
+      choose: { total: 0, correct: 0 },
+      multi: { total: 0, correct: 0 }
+    }
+    
     questions.value.forEach(q => {
       const isCorrect = checkQuestionAnswer(q)
+      stats[q.type].total++
       if (isCorrect) {
-        if (q.type === 'bool' || q.type === 'choose') {
-          score += 0.5
-        } else if (q.type === 'multi') {
-          score += 1
-        }
+        stats[q.type].correct++
       }
     })
+    
+    // 计算总权重: bool×1 + choose×1 + multi×2
+    const totalWeight = stats.bool.total * 1 + stats.choose.total * 1 + stats.multi.total * 2
+    
+    // 计算各题型分值
+    const boolPoints = (stats.bool.total * 1 / totalWeight) * 100
+    const choosePoints = (stats.choose.total * 1 / totalWeight) * 100
+    const multiPoints = (stats.multi.total * 2 / totalWeight) * 100
+    
+    // 计算得分
+    let score = 0
+    if (stats.bool.total > 0) {
+      score += (stats.bool.correct / stats.bool.total) * boolPoints
+    }
+    if (stats.choose.total > 0) {
+      score += (stats.choose.correct / stats.choose.total) * choosePoints
+    }
+    if (stats.multi.total > 0) {
+      score += (stats.multi.correct / stats.multi.total) * multiPoints
+    }
+    
     practiceScore.value = score
   }
   
