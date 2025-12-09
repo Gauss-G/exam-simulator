@@ -4,9 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>铁头模拟考试系统</title>
-    <script type="module" crossorigin src="/exam-simulator/assets/index-DCsVm6lP.js"></script>
-    <link rel="stylesheet" crossorigin href="/exam-simulator/assets/index-BUhCBsw5.css">
+    <title>模拟考试系统</title>
+    <script>
+      // GitHub Pages SPA 路由支持
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/exam-simulator/assets/index--bEo4Vk2.js"></script>
+    <link rel="stylesheet" crossorigin href="/exam-simulator/assets/index-CdPYqSbS.css">
   </head>
   <body>
     <div id="app"></div>
