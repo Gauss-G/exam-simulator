@@ -151,29 +151,26 @@
       </el-card>
 
       <!-- 导航按钮 -->
-      <div class="navigation-buttons">
+      <div class="question-nav">
         <el-button 
-          size="large"
-          :disabled="currentIndex === 0"
           @click="prevQuestion"
+          :disabled="currentIndex === 0"
         >
-          <el-icon><ArrowLeft /></el-icon>
           上一题
         </el-button>
         <el-button 
-          size="large"
-          @click="finishLearn"
-        >
-          <el-icon><CircleClose /></el-icon>
-          结束学习
-        </el-button>
-        <el-button 
-          size="large"
-          :disabled="currentIndex === questions.length - 1"
+          type="primary"
           @click="nextQuestion"
+          v-if="currentIndex < questions.length - 1"
         >
           下一题
-          <el-icon><ArrowRight /></el-icon>
+        </el-button>
+        <el-button 
+          type="success"
+          @click="finishLearn"
+          v-else
+        >
+          完成学习
         </el-button>
       </div>
     </div>
@@ -184,7 +181,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Check, View, ArrowLeft, ArrowRight, CircleClose } from '@element-plus/icons-vue'
+import { Check, View } from '@element-plus/icons-vue'
 import { getRandomQuestions } from '../utils/questions'
 import { getMasteredQuestions } from '../utils/storage'
 
@@ -525,15 +522,10 @@ onUnmounted(() => {
   border-radius: 4px;
 }
 
-.navigation-buttons {
+.question-nav {
   display: flex;
   justify-content: space-between;
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.navigation-buttons .el-button {
-  flex: 1;
+  margin-top: 30px;
 }
 
 /* 移动端适配 */
@@ -548,14 +540,6 @@ onUnmounted(() => {
 
   .answer-value {
     font-size: 16px;
-  }
-
-  .navigation-buttons {
-    flex-direction: column;
-  }
-
-  .navigation-buttons .el-button {
-    width: 100%;
   }
 }
 
