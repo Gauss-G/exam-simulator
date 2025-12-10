@@ -16,6 +16,16 @@
             <el-menu-item index="/learn">学习模式</el-menu-item>
             <el-menu-item index="/wrong-questions">错题集</el-menu-item>
           </el-menu>
+          <el-button 
+            v-if="!isInstalled"
+            class="install-btn"
+            type="primary"
+            size="small"
+            @click="showInstallPrompt"
+          >
+            <el-icon><Download /></el-icon>
+            <span class="install-text">安装</span>
+          </el-button>
         </div>
       </el-header>
       <el-main class="main-content">
@@ -23,18 +33,35 @@
       </el-main>
     </el-container>
     
+    <!-- 安装引导 -->
+    <InstallPrompt ref="installPromptRef" />
+    
     <!-- 打赏组件 -->
     <DonationModal />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { Download } from '@element-plus/icons-vue'
+import InstallPrompt from './components/InstallPrompt.vue'
 import DonationModal from './components/DonationModal.vue'
 
 const route = useRoute()
 const activeMenu = computed(() => route.path)
+const installPromptRef = ref(null)
+const isInstalled = ref(false)
+
+// 检测是否已安装
+onMounted(() => {
+  isInstalled.value = window.matchMedia('(display-mode: standalone)').matches
+})
+
+// 显示安装提示
+const showInstallPrompt = () => {
+  installPromptRef.value?.show()
+}
 </script>
 
 <style scoped>
@@ -62,6 +89,11 @@ const activeMenu = computed(() => route.path)
   font-size: 20px;
   color: #409eff;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.install-btn {
+  margin-left: auto;
   flex-shrink: 0;
 }
 
@@ -96,6 +128,15 @@ const activeMenu = computed(() => route.path)
   .header-content :deep(.el-menu-item) {
     padding: 0 10px;
     font-size: 14px;
+  }
+  
+  .install-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .install-text {
+    margin-left: 5px;
   }
   
   .main-content {
