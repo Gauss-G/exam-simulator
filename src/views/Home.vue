@@ -6,7 +6,7 @@
     </el-card>
 
     <el-row :gutter="20" class="feature-cards">
-      <el-col :xs="24" :sm="12" :md="8">
+      <el-col :xs="24" :sm="12" :md="6">
         <el-card class="feature-card" shadow="hover" @click="goTo('/exam')">
           <div class="feature-icon">
             <el-icon :size="48" color="#409eff">
@@ -24,7 +24,7 @@
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :md="8">
+      <el-col :xs="24" :sm="12" :md="6">
         <el-card class="feature-card" shadow="hover" @click="goTo('/practice')">
           <div class="feature-icon">
             <el-icon :size="48" color="#67c23a">
@@ -42,7 +42,7 @@
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :md="8">
+      <el-col :xs="24" :sm="12" :md="6">
         <el-card class="feature-card" shadow="hover" @click="goTo('/learn')">
           <div class="feature-icon">
             <el-icon :size="48" color="#e6a23c">
