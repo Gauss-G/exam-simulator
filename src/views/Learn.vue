@@ -1,18 +1,8 @@
 <template>
   <div class="learn-container">
-    <el-page-header v-if="!learnStarted" @back="$router.push('/')">
-      <template #content>
-        <span class="page-title">学习模式</span>
-      </template>
-    </el-page-header>
-
     <!-- 设置界面 -->
     <el-card v-if="!learnStarted" class="settings-card">
-      <template #header>
-        <div class="card-header">
-          <span>学习设置</span>
-        </div>
-      </template>
+      <h2>学习模式设置</h2>
 
       <el-form :model="learnForm" label-width="120px">
         <el-form-item label="题型选择">
@@ -400,18 +390,9 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.settings-card {
-  margin-top: 20px;
-}
-
-.card-header {
-  font-size: 18px;
-  font-weight: 600;
+.settings-card h2 {
+  margin: 0 0 20px 0;
+  color: #303133;
 }
 
 .learn-content {
