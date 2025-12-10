@@ -13,6 +13,7 @@
             <el-menu-item index="/">首页</el-menu-item>
             <el-menu-item index="/exam">模拟考试</el-menu-item>
             <el-menu-item index="/practice">练习模式</el-menu-item>
+            <el-menu-item index="/learn">学习模式</el-menu-item>
             <el-menu-item index="/wrong-questions">错题集</el-menu-item>
           </el-menu>
         </div>

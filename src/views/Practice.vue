@@ -197,7 +197,7 @@
                 size="large" 
                 style="margin-left: 12px;"
               >
-                {{ practiceScore >= 60 ? '及格' : '不及格' }}
+                {{ practiceScore >= 60 ? '✅通过' : '❌不合格' }}
               </el-tag>
             </div>
             <div style="font-size: 14px; color: #909399;">
