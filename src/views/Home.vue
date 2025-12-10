@@ -43,6 +43,24 @@
       </el-col>
 
       <el-col :xs="24" :sm="12" :md="8">
+        <el-card class="feature-card" shadow="hover" @click="goTo('/learn')">
+          <div class="feature-icon">
+            <el-icon :size="48" color="#e6a23c">
+              <Reading />
+            </el-icon>
+          </div>
+          <h3>学习模式</h3>
+          <p>浏览题目快速学习</p>
+          <ul class="feature-list">
+            <li>悬停/长按查看答案</li>
+            <li>键盘/滑动切换题目</li>
+            <li>支持排除已掌握题目</li>
+          </ul>
+          <el-button type="warning" class="start-btn">开始学习</el-button>
+        </el-card>
+      </el-col>
+
+      <el-col :xs="24" :sm="12" :md="8">
         <el-card class="feature-card" shadow="hover" @click="goTo('/wrong-questions')">
           <div class="feature-icon">
             <el-icon :size="48" color="#f56c6c">
@@ -90,7 +108,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Document, Edit, Warning } from '@element-plus/icons-vue'
+import { Document, Edit, Reading, Warning } from '@element-plus/icons-vue'
 import { getMasteredQuestions, getWrongQuestions } from '../utils/storage'
 import questionsBool from '../../questions/questions_bool.json'
 import questionsChoose from '../../questions/questions_choose.json'

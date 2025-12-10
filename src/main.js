@@ -16,3 +16,17 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(ElementPlus)
 app.use(router)
 app.mount('#app')
+
+// 注册 PWA Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/exam-simulator/sw.js').then(
+      registration => {
+        console.log('SW registered: ', registration)
+      },
+      err => {
+        console.log('SW registration failed: ', err)
+      }
+    )
+  })
+}
