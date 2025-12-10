@@ -17,8 +17,10 @@ export default defineConfig({
         theme_color: '#409eff',
         background_color: '#ffffff',
         display: 'standalone',
+        orientation: 'portrait',
         start_url: '/exam-simulator/',
         scope: '/exam-simulator/',
+        categories: ['education', 'productivity'],
         icons: [
           {
             src: '/exam-simulator/pwa-192x192.png',
