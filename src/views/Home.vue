@@ -60,7 +60,7 @@
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :md="8">
+      <el-col :xs="24" :sm="12" :md="6">
         <el-card class="feature-card" shadow="hover" @click="goTo('/wrong-questions')">
           <div class="feature-icon">
             <el-icon :size="48" color="#f56c6c">

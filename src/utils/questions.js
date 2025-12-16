@@ -25,19 +25,39 @@ export function getRandomQuestions(type, count, excludeMastered = false) {
       break
   }
   
+  console.log(`获取${type}题目，总数：${questions.length}，请求数量：${count}，排除已掌握：${excludeMastered}`)
+  
   // 如果需要排除已掌握的题目
   if (excludeMastered) {
     const { getMasteredQuestions } = require('./storage')
     const masteredList = getMasteredQuestions()
+    console.log('已掌握题目列表：', masteredList)
+    
+    const beforeCount = questions.length
     questions = questions.filter(q => {
       const key = `${type}_${q.index}`
-      return !masteredList.includes(key)
+      const isMastered = masteredList.includes(key)
+      if (isMastered) {
+        console.log(`过滤掉已掌握题目：${key}`)
+      }
+      return !isMastered
     })
+    console.log(`过滤后剩余题目数：${questions.length}（过滤前：${beforeCount}）`)
+  }
+  
+  // 如果没有可用题目，返回空数组
+  if (questions.length === 0) {
+    console.log('没有可用题目')
+    return []
   }
   
   // 洗牌算法随机抽取
   const shuffled = questions.sort(() => 0.5 - Math.random())
-  return shuffled.slice(0, count).map((q, idx) => ({
+  // 取可用题目数量和请求数量的较小值
+  const actualCount = Math.min(count, questions.length)
+  console.log(`实际返回题目数：${actualCount}`)
+  
+  return shuffled.slice(0, actualCount).map((q, idx) => ({
     ...q,
     id: `${type}_${idx}`,
     type,

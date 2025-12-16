@@ -328,8 +328,20 @@ const startPractice = () => {
   }
   
   if (questions.value.length === 0) {
-    ElMessage.warning('没有符合条件的题目，请调整设置')
+    if (excludeMastered) {
+      ElMessage.warning('没有符合条件的题目，所选题型的题目可能都已掌握，请取消"排除已掌握"或选择其他题型')
+    } else {
+      ElMessage.warning('没有符合条件的题目，请调整设置')
+    }
     return
+  }
+  
+  // 如果实际获取的题目少于请求的数量，提示用户
+  if (practiceForm.value.mode === 'single') {
+    const requestedCount = practiceForm.value.count
+    if (questions.value.length < requestedCount) {
+      ElMessage.info(`可用题目不足，已为您准备了 ${questions.value.length} 道题目`)
+    }
   }
   
   practiceStarted.value = true

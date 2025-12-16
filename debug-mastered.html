@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>调试已掌握题目</title>
+</head>
+<body>
+    <h1>调试已掌握题目功能</h1>
+    <button onclick="checkData()">检查数据</button>
+    <button onclick="clearData()">清除数据</button>
+    <pre id="output"></pre>
+
+    <script type="module">
+        import questionsBool from './questions/questions_bool.json' assert { type: 'json' };
+        import questionsChoose from './questions/questions_choose.json' assert { type: 'json' };
+        import questionsMulti from './questions/questions_multi.json' assert { type: 'json' };
+
+        window.checkData = function() {
+            const output = document.getElementById('output');
+            let result = '';
+
+            // 检查 localStorage 数据
+            const masteredStr = localStorage.getItem('mastered_questions');
+            const statsStr = localStorage.getItem('question_stats');
+            
+            result += '=== LocalStorage 数据 ===\n';
+            result += 'mastered_questions: ' + masteredStr + '\n\n';
+            result += 'question_stats: ' + statsStr + '\n\n';
+
+            if (masteredStr) {
+                const mastered = JSON.parse(masteredStr);
+                result += `已掌握题目数量: ${mastered.length}\n`;
+                result += `已掌握题目列表: ${JSON.stringify(mastered, null, 2)}\n\n`;
+            }
+
+            // 检查题目数据结构
+            result += '=== 题目数据结构示例 ===\n';
+            result += '判断题第一题: ' + JSON.stringify(questionsBool[0], null, 2) + '\n\n';
+            result += '判断题 index 类型: ' + typeof questionsBool[0].index + '\n';
+            result += '判断题 index 值: "' + questionsBool[0].index + '"\n\n';
+
+            // 模拟过滤逻辑
+            if (masteredStr) {
+                const mastered = JSON.parse(masteredStr);
+                const type = 'bool';
+                result += '=== 模拟过滤逻辑 ===\n';
+                result += `原始判断题数量: ${questionsBool.length}\n`;
+                
+                const filtered = questionsBool.filter(q => {
+                    const key = `${type}_${q.index}`;
+                    const isMastered = mastered.includes(key);
+                    if (isMastered) {
+                        result += `题目 ${key} 被过滤\n`;
+                    }
+                    return !isMastered;
+                });
+                
+                result += `过滤后数量: ${filtered.length}\n`;
+            }
+
+            output.textContent = result;
+        };
+
+        window.clearData = function() {
+            localStorage.removeItem('mastered_questions');
+            localStorage.removeItem('question_stats');
+            localStorage.removeItem('wrong_questions');
+            alert('数据已清除');
+            document.getElementById('output').textContent = '';
+        };
+    </script>
+</body>
+</html>

@@ -88,18 +88,21 @@ export function updateQuestionStats(questionId, type, isCorrect) {
   const key = `${type}_${questionId}`
   
   if (!stats[key]) {
-    stats[key] = { correctCount: 0, totalCount: 0 }
+    stats[key] = { correctCount: 0, totalCount: 0, consecutiveCorrect: 0 }
   }
   
   stats[key].totalCount++
   if (isCorrect) {
     stats[key].correctCount++
+    stats[key].consecutiveCorrect = (stats[key].consecutiveCorrect || 0) + 1
+  } else {
+    stats[key].consecutiveCorrect = 0 // 答错后重置连续答对次数
   }
   
   setStorageData(STORAGE_KEYS.QUESTION_STATS, stats)
   
   // 如果连续答对3次，标记为已掌握
-  if (stats[key].correctCount >= 3) {
+  if (stats[key].consecutiveCorrect >= 3) {
     addMasteredQuestion(key)
   }
   
