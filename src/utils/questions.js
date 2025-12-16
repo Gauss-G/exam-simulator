@@ -2,6 +2,7 @@
 import questionsBool from '../../questions/questions_bool.json'
 import questionsChoose from '../../questions/questions_choose.json'
 import questionsMulti from '../../questions/questions_multi.json'
+import { getMasteredQuestions } from './storage'
 
 // 题库数据缓存
 const questionCache = {
@@ -29,7 +30,6 @@ export function getRandomQuestions(type, count, excludeMastered = false) {
   
   // 如果需要排除已掌握的题目
   if (excludeMastered) {
-    const { getMasteredQuestions } = require('./storage')
     const masteredList = getMasteredQuestions()
     console.log('已掌握题目列表：', masteredList)
     
@@ -63,6 +63,32 @@ export function getRandomQuestions(type, count, excludeMastered = false) {
     type,
     userAnswer: type === 'multi' ? [] : ''
   }))
+}
+
+// 获取可用题目数量（排除已掌握后）
+export function getAvailableCount(type, excludeMastered = false) {
+  let questions = []
+  switch (type) {
+    case 'bool':
+      questions = [...questionCache.bool]
+      break
+    case 'choose':
+      questions = [...questionCache.choose]
+      break
+    case 'multi':
+      questions = [...questionCache.multi]
+      break
+  }
+  
+  if (excludeMastered) {
+    const masteredList = getMasteredQuestions()
+    questions = questions.filter(q => {
+      const key = `${type}_${q.index}`
+      return !masteredList.includes(key)
+    })
+  }
+  
+  return questions.length
 }
 
 // 生成考试题目

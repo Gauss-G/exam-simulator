@@ -26,9 +26,9 @@
             <el-input-number 
               v-model="practiceForm.count" 
               :min="1" 
-              :max="getMaxCount()"
+              :max="getMaxCount"
             />
-            <span class="tip">（最多 {{ getMaxCount() }} 道）</span>
+            <span class="tip">（最多 {{ getMaxCount }} 道）</span>
           </el-form-item>
         </template>
 
@@ -38,27 +38,27 @@
             <el-input-number 
               v-model="practiceForm.boolCount" 
               :min="0" 
-              :max="questionsBool.length"
+              :max="getBoolAvailableCount"
             />
-            <span class="tip">（最多 {{ questionsBool.length }} 道）</span>
+            <span class="tip">（最多 {{ getBoolAvailableCount }} 道）</span>
           </el-form-item>
 
           <el-form-item label="单选题数量">
             <el-input-number 
               v-model="practiceForm.chooseCount" 
               :min="0" 
-              :max="questionsChoose.length"
+              :max="getChooseAvailableCount"
             />
-            <span class="tip">（最多 {{ questionsChoose.length }} 道）</span>
+            <span class="tip">（最多 {{ getChooseAvailableCount }} 道）</span>
           </el-form-item>
 
           <el-form-item label="多选题数量">
             <el-input-number 
               v-model="practiceForm.multiCount" 
               :min="0" 
-              :max="questionsMulti.length"
+              :max="getMultiAvailableCount"
             />
-            <span class="tip">（最多 {{ questionsMulti.length }} 道）</span>
+            <span class="tip">（最多 {{ getMultiAvailableCount }} 道）</span>
           </el-form-item>
         </template>
 
@@ -256,7 +256,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getRandomQuestions, checkAnswer as checkQuestionAnswer } from '../utils/questions'
+import { getRandomQuestions, getAvailableCount, checkAnswer as checkQuestionAnswer } from '../utils/questions'
 import { getMasteredQuestions, addWrongQuestion, updateQuestionStats } from '../utils/storage'
 import questionsBool from '../../questions/questions_bool.json'
 import questionsChoose from '../../questions/questions_choose.json'
@@ -286,19 +286,27 @@ const correctCount = computed(() => {
   return questions.value.filter(q => checkQuestionAnswer(q)).length
 })
 
+// 获取最大题目数量（考虑排除已掌握）
+const getMaxCount = computed(() => {
+  return getAvailableCount(practiceForm.value.type, practiceForm.value.excludeMastered)
+})
+
+// 获取各题型可用数量
+const getBoolAvailableCount = computed(() => {
+  return getAvailableCount('bool', practiceForm.value.excludeMastered)
+})
+
+const getChooseAvailableCount = computed(() => {
+  return getAvailableCount('choose', practiceForm.value.excludeMastered)
+})
+
+const getMultiAvailableCount = computed(() => {
+  return getAvailableCount('multi', practiceForm.value.excludeMastered)
+})
+
 onMounted(() => {
   masteredQuestions.value = getMasteredQuestions()
 })
-
-// 获取最大题目数量
-const getMaxCount = () => {
-  const counts = {
-    'bool': questionsBool.length,
-    'choose': questionsChoose.length,
-    'multi': questionsMulti.length
-  }
-  return counts[practiceForm.value.type] || 100
-}
 
 // 开始练习
 const startPractice = () => {
